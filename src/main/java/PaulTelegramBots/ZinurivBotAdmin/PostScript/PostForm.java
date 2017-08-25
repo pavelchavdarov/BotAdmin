@@ -3,7 +3,6 @@ package PaulTelegramBots.ZinurivBotAdmin.MessageScript;
 import com.vaadin.annotations.PropertyId;
 import com.vaadin.data.Binder;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.RichTextArea;
@@ -15,27 +14,26 @@ import com.vaadin.ui.themes.ValoTheme;
 
 
 public class MessageForm extends VerticalLayout {
-
-	private DateField dateToSend = new DateField("Дата");
-	
-	@PropertyId("message")
+	@PropertyId("timeshift")
+	private TextField timeShiftField = new TextField("Интервал");
+	@PropertyId("msg")
 	private TextArea messageField = new TextArea("Сообщение");
 	private Button save = new Button("Сохранить");
 	private Button delete = new Button("Удалить");
 	private Binder<Message> binder = new Binder<>(Message.class);
 	
-	private PostService service = PostService.getInstance();
+	private MessageService service = MessageService.getInstance();
 	private Message message;
 	private Script script;
 	
 	public MessageForm(Script cript) {
 		this.script = cript;
-		dateToSend.setPlaceholder("yyyy-mm-dd");
+		
 		//setSizeUndefined();
 		
 		HorizontalLayout buttons = new HorizontalLayout(save, delete);
-		dateToSend.setSizeFull();
-		addComponents(dateToSend, messageField, buttons);
+		timeShiftField.setSizeFull();
+		addComponents(timeShiftField, messageField, buttons);
 		messageField.setSizeFull();
 		save.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		save.addClickListener(e -> save());
@@ -50,7 +48,7 @@ public class MessageForm extends VerticalLayout {
 		
 		delete.setVisible(message.isPersisted());
 		setVisible(true);
-		dateToSend.focus();
+		timeShiftField.selectAll();
 		
 	}
 	

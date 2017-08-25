@@ -1,20 +1,19 @@
 package PaulTelegramBots.ZinurivBotAdmin.MessageScript;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 @SuppressWarnings("serial")
 public class Message implements Serializable, Cloneable{
 	private Long id;
-	private String message;
-	private Date dateToSend;
+	private String msg;
+	private String timeshift;
 	
 	public Message() {}
 	
-	public Message(long id, Date sendDate, String msg) {
+	public Message(long id, String timeshift, String msg) {
 		this.id = id;
-		this.dateToSend = sendDate;
-		this.message = msg;
+		this.timeshift = timeshift;
+		this.msg = msg;
 	}
 	public long getId() {
 		return id;
@@ -22,11 +21,17 @@ public class Message implements Serializable, Cloneable{
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getMessage() {
-		return message;
+	public String getMsg() {
+		return msg;
 	}
-	public void setMessage(String msg) {
-		this.message = msg;
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+	public String getTimeshift() {
+		return timeshift;
+	}
+	public void setTimeshift(String timeshift) {
+		this.timeshift = timeshift;
 	}
 
 	@Override
@@ -59,21 +64,11 @@ public class Message implements Serializable, Cloneable{
 
 	@Override
 	public String toString() {
-		return id + " \"" + message + "\" " + getDateToSend();
+		return id + " \"" + msg + "\" " + timeshift;
 	}
 	
 	public boolean isPersisted() {
 		return id != null;
 	}
-
-	public Date getDateToSend() {
-		return dateToSend;
-	}
-
-	public void setDateToSend(Date dateToSend) {
-		this.dateToSend = dateToSend;
-	}
-
-
 
 }

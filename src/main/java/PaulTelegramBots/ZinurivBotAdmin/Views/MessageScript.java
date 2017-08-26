@@ -1,4 +1,4 @@
-package PaulTelegramBots.ZinurivBotAdmin.MessageScript;
+package PaulTelegramBots.ZinurivBotAdmin.Views;
 
 import java.util.List;
 
@@ -12,30 +12,34 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.VerticalLayout;
 
-public class Script extends CustomComponent {
+import PaulTelegramBots.ZinurivBotAdmin.Models.Message;
+import PaulTelegramBots.ZinurivBotAdmin.Services.MessageService;
+
+public class MessageScript extends CustomComponent {
 	
 	private MessageService service = MessageService.getInstance();
     private Grid<Message> grid = new Grid<>(Message.class);
     private MessageForm form = new MessageForm(this);
     
-	public Script() {
+	public MessageScript() {
 		Button addMessage = new Button("Добавить сообщение");
     	addMessage.addClickListener(e ->{
     		grid.asSingleSelect().clear();
     		form.setMessage(new Message());
     	});
-    	Label label = new Label("<H1>Программа рассылки</H1>", ContentMode.HTML);
+    	Label label = new Label("<H1>Единоразовая рассылки</H1>", ContentMode.HTML);
     	label.setSizeUndefined();
     	HorizontalLayout labelLayout = new HorizontalLayout(label);
     	labelLayout.setSizeFull();
     	labelLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
     	
-    	HorizontalLayout menu = new HorizontalLayout(new MenuBar());
     	HorizontalLayout toolbar = new HorizontalLayout(addMessage);
     	
-    	grid.setColumns("timeshift", "msg");
-    	grid.getDefaultHeaderRow().getCell("timeshift").setText("Интервал");
-    	grid.getDefaultHeaderRow().getCell("msg").setText("Сообщение");
+    	grid.setColumns("dateToSend", "message");
+    	grid.getDefaultHeaderRow().getCell("dateToSend").setText("Дата");
+    	grid.getDefaultHeaderRow().getCell("message").setText("Сообщение");
+    	grid.getColumn("dateToSend").setExpandRatio(1);
+    	grid.getColumn("message").setExpandRatio(8);
 
     	HorizontalLayout main = new HorizontalLayout(grid, form);
     	main.setSizeFull();
@@ -54,11 +58,12 @@ public class Script extends CustomComponent {
     	});
         // add Grid to the layout
     	VerticalLayout layout = new VerticalLayout();
-    	layout.setSizeFull();
+    	//layout.setSizeFull();
         layout.addComponents(labelLayout, toolbar, main);
         setCompositionRoot(layout);
         //setSizeFull();
      // fetch list of Customers from service and assign it to Grid
+        setSizeFull();
         updateList();
 	}
 	

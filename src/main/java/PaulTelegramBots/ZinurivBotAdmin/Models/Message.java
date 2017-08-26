@@ -1,37 +1,46 @@
-package PaulTelegramBots.ZinurivBotAdmin.MessageScript;
+package PaulTelegramBots.ZinurivBotAdmin.Models;
 
 import java.io.Serializable;
+//import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+
 
 @SuppressWarnings("serial")
 public class Message implements Serializable, Cloneable{
 	private Long id;
-	private String msg;
-	private String timeshift;
+	private String message;
+	private LocalDate dateToSend;
 	
 	public Message() {}
 	
-	public Message(long id, String timeshift, String msg) {
+	public Message(long id, LocalDate sendDate, String msg) {
 		this.id = id;
-		this.timeshift = timeshift;
-		this.msg = msg;
+		this.dateToSend = sendDate;
+		this.message = msg;
 	}
+	
+	public Message(long id, String sendDate, String msg) {
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.mm.yyyy");
+		this.id = id;
+		
+		this.dateToSend = LocalDate.parse(sendDate, formatter);
+		this.message = msg;
+	}
+	
 	public long getId() {
 		return id;
 	}
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getMsg() {
-		return msg;
+	public String getMessage() {
+		return message;
 	}
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-	public String getTimeshift() {
-		return timeshift;
-	}
-	public void setTimeshift(String timeshift) {
-		this.timeshift = timeshift;
+	public void setMessage(String msg) {
+		this.message = msg;
 	}
 
 	@Override
@@ -64,11 +73,22 @@ public class Message implements Serializable, Cloneable{
 
 	@Override
 	public String toString() {
-		return id + " \"" + msg + "\" " + timeshift;
+		return id + " \"" + message + "\" " + getDateToSend();
 	}
 	
 	public boolean isPersisted() {
 		return id != null;
 	}
+
+	public LocalDate getDateToSend() {
+		return dateToSend;
+	}
+
+
+	public void setDateToSend(LocalDate dateToSend) {
+		this.dateToSend = dateToSend;
+	}
+
+
 
 }

@@ -1,4 +1,4 @@
-package PaulTelegramBots.ZinurivBotAdmin.MessageScript;
+package PaulTelegramBots.ZinurivBotAdmin.Views;
 
 import java.util.List;
 
@@ -12,19 +12,22 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.VerticalLayout;
 
-public class Script extends CustomComponent {
+import PaulTelegramBots.ZinurivBotAdmin.Models.Post;
+import PaulTelegramBots.ZinurivBotAdmin.Services.PostService;
+
+public class PostScript extends CustomComponent {
 	
 	private PostService service = PostService.getInstance();
-    private Grid<Message> grid = new Grid<>(Message.class);
-    private MessageForm form = new MessageForm(this);
+    private Grid<Post> grid = new Grid<>(Post.class);
+    private PostForm form = new PostForm(this);
     
-	public Script() {
+	public PostScript() {
 		Button addMessage = new Button("Добавить сообщение");
     	addMessage.addClickListener(e ->{
     		grid.asSingleSelect().clear();
-    		form.setMessage(new Message());
+    		form.setMessage(new Post());
     	});
-    	Label label = new Label("<H1>Единоразовая рассылки</H1>", ContentMode.HTML);
+    	Label label = new Label("<H1>Программа рассылки</H1>", ContentMode.HTML);
     	label.setSizeUndefined();
     	HorizontalLayout labelLayout = new HorizontalLayout(label);
     	labelLayout.setSizeFull();
@@ -33,9 +36,11 @@ public class Script extends CustomComponent {
     	HorizontalLayout menu = new HorizontalLayout(new MenuBar());
     	HorizontalLayout toolbar = new HorizontalLayout(addMessage);
     	
-    	grid.setColumns("dateToSend", "message");
-    	grid.getDefaultHeaderRow().getCell("dateToSend").setText("Интервал");
+    	grid.setColumns("dayDelay", "message");
+    	grid.getDefaultHeaderRow().getCell("dayDelay").setText("Интервал");
     	grid.getDefaultHeaderRow().getCell("message").setText("Сообщение");
+    	grid.getColumn("dayDelay").setExpandRatio(1);
+    	grid.getColumn("message").setExpandRatio(4);
 
     	HorizontalLayout main = new HorizontalLayout(grid, form);
     	main.setSizeFull();
@@ -63,7 +68,7 @@ public class Script extends CustomComponent {
 	}
 	
 	public void updateList() {
-    	List<Message> customers = service.findAll();
+    	List<Post> customers = service.findAll();
         grid.setItems(customers);
 
     }

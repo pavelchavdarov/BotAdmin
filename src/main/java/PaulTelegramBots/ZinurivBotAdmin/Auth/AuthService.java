@@ -1,4 +1,4 @@
-package PaulTelegramBots.ZinurivBotAdmin.Public;
+package PaulTelegramBots.ZinurivBotAdmin.Auth;
 
 import java.util.Arrays;
 import java.util.Optional;

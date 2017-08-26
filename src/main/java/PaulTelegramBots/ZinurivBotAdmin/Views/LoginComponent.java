@@ -1,7 +1,9 @@
-package PaulTelegramBots.ZinurivBotAdmin.Public;
+package PaulTelegramBots.ZinurivBotAdmin.Views;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.ui.NotificationRole;
@@ -16,10 +18,11 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import PaulTelegramBots.ZinurivBotAdmin.MyUI;
+import PaulTelegramBots.ZinurivBotAdmin.Auth.AuthService;
 
 import com.vaadin.ui.*;
 
-public class LoginComponent extends VerticalLayout {
+public class LoginComponent extends VerticalLayout implements View {
 	
 	private TextField username;
 	private PasswordField password;
@@ -57,11 +60,18 @@ public class LoginComponent extends VerticalLayout {
 	private void onLogin(String username, String password, boolean rememberMe) {
 		if(AuthService.login(username, password, rememberMe)) {
 			MyUI ui = (MyUI) UI.getCurrent();
-			 ui.showPersonalAccount();
+			 ui.getNavigator().navigateTo("account");
 		}
 		else {
 			Notification.show("Введена неверная комбинация логин/пароль", Notification.Type.ERROR_MESSAGE);
 		}
+	}
+	
+	@Override
+	public void enter(ViewChangeEvent event) {
+		// TODO Auto-generated method stub
+		View.super.enter(event);
+		System.out.println("Аутентификация");
 	}
 	
 }

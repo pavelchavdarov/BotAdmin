@@ -1,19 +1,18 @@
-package PaulTelegramBots.ZinurivBotAdmin.MessageScript;
+package PaulTelegramBots.ZinurivBotAdmin.Models;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 @SuppressWarnings("serial")
-public class Message implements Serializable, Cloneable{
+public class Post implements Serializable, Cloneable{
 	private Long id;
 	private String message;
-	private Date dateToSend;
+	private String dayDelay;
 	
-	public Message() {}
+	public Post() {}
 	
-	public Message(long id, Date sendDate, String msg) {
+	public Post(long id, String dayDelay, String msg) {
 		this.id = id;
-		this.dateToSend = sendDate;
+		this.dayDelay = dayDelay;
 		this.message = msg;
 	}
 	public long getId() {
@@ -38,8 +37,8 @@ public class Message implements Serializable, Cloneable{
 			return false;
 		}
 
-		if (obj instanceof Message && obj.getClass().equals(getClass())) {
-			return this.id.equals(((Message) obj).id);
+		if (obj instanceof Post && obj.getClass().equals(getClass())) {
+			return this.id.equals(((Post) obj).id);
 		}
 
 		return false;
@@ -53,27 +52,25 @@ public class Message implements Serializable, Cloneable{
 	}
 
 	@Override
-	public Message clone() throws CloneNotSupportedException {
-		return (Message) super.clone();
+	public Post clone() throws CloneNotSupportedException {
+		return (Post) super.clone();
 	}
 
 	@Override
 	public String toString() {
-		return id + " \"" + message + "\" " + getDateToSend();
+		return id + " \"" + message + "\" " + dayDelay;
 	}
 	
 	public boolean isPersisted() {
 		return id != null;
 	}
 
-	public Date getDateToSend() {
-		return dateToSend;
+	public String getDayDelay() {
+		return dayDelay;
 	}
 
-	public void setDateToSend(Date dateToSend) {
-		this.dateToSend = dateToSend;
+	public void setDayDelay(String dayDelay) {
+		this.dayDelay = dayDelay;
 	}
-
-
 
 }

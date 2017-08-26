@@ -1,4 +1,4 @@
-package PaulTelegramBots.ZinurivBotAdmin.Public;
+package PaulTelegramBots.ZinurivBotAdmin.Auth;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

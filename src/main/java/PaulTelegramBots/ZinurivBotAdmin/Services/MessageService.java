@@ -1,27 +1,30 @@
-package PaulTelegramBots.ZinurivBotAdmin.MessageScript;
+package PaulTelegramBots.ZinurivBotAdmin.Services;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import PaulTelegramBots.ZinurivBotAdmin.HikariCP;
+import PaulTelegramBots.ZinurivBotAdmin.Models.Message;
 
-public class PostService {
+public class MessageService {
 	
 	private static Connection connection;
 	
-	private static PostService messageservice;
+	private static MessageService messageservice;
 	
-	private PostService() {
+	private MessageService() {
 	}
 	
-	public static PostService getInstance() {
+	public static MessageService getInstance() {
 		if (messageservice == null) {
-			messageservice = new PostService();
+			messageservice = new MessageService();
 		}
 		try {
 			if (connection == null || connection.isClosed()) {
@@ -40,11 +43,11 @@ public class PostService {
 		PreparedStatement prepStatment;
 		
 		try {
-			prepStatment = connection.prepareStatement("SELECT \"ID\" id, \"Message\" message, \"Date_to_send\" sand_date FROM \"Messages\"");
+			prepStatment = connection.prepareStatement("SELECT id, message, date_to_send FROM messages");
 			
 			ResultSet rs = prepStatment.executeQuery();
             while(rs.next()){
-            	result.add(new Message(rs.getLong("id"), rs.getDate("sand_date"), rs.getString("message")));
+            	result.add(new Message(rs.getLong("id"), rs.getDate("date_to_send").toLocalDate(), rs.getString("message")));
             }
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -72,8 +75,8 @@ public class PostService {
 		PreparedStatement prepStatment;
 		if (message.isPersisted()) {
 			try {
-				prepStatment = connection.prepareStatement("update \"Messages\" set \"Date_to_send\" = ?, \"Message\" = ? where \"ID\" = ?");
-				prepStatment.setDate(1, message.getDateToSend());
+				prepStatment = connection.prepareStatement("update messages set date_to_send = ?, message = ? where id = ?");
+				prepStatment.setDate(1, Date.valueOf(message.getDateToSend()));
 				prepStatment.setString(2, message.getMessage());
 				prepStatment.setBigDecimal(3, BigDecimal.valueOf(message.getId()));
 				prepStatment.executeUpdate();
@@ -84,8 +87,8 @@ public class PostService {
 		}
 		else {
 			try {
-				prepStatment = connection.prepareStatement("insert into \"Messages\" (\"Date_to_send\", \"Message\") values(?, ?)");
-				prepStatment.setDate(1, message.getDateToSend());
+				prepStatment = connection.prepareStatement("insert into messages (date_to_send, message) values(?, ?)");
+				prepStatment.setDate(1, Date.valueOf(message.getDateToSend()));
 				prepStatment.setString(2, message.getMessage());
 				prepStatment.executeUpdate();
 			} catch (SQLException e) {

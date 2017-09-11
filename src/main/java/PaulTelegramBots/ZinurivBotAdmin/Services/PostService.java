@@ -8,92 +8,100 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import PaulTelegramBots.ZinurivBotAdmin.HikariCP;
+import DAO.HikariCP;
 import PaulTelegramBots.ZinurivBotAdmin.Models.Post;
 
 public class PostService {
 	
 	private static Connection connection;
 	
-	private static PostService messageservice;
+	private static PostService postService;
+	
+//	private Long postScriptId;
 	
 	private PostService() {
 	}
 	
 	public static PostService getInstance() {
-		if (messageservice == null) {
-			messageservice = new PostService();
+		if (postService == null) {
+			postService = new PostService();
 		}
-		try {
-			if (connection == null || connection.isClosed()) {
-				connection = HikariCP.getDataSource().getConnection();
-				System.out.println("Spawn new connection");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return messageservice;
+		return postService;
 	}
 	
-	public synchronized List<Post> findAll(){
-		ArrayList<Post> result = new ArrayList<>();
-		PreparedStatement prepStatment;
-		
-		try {
-			prepStatment = connection.prepareStatement("SELECT \"ID\" id, \"Message\" message, \"DayDelay\" delay FROM \"Posts\"");
-			
-			ResultSet rs = prepStatment.executeQuery();
-            while(rs.next()){
-            	result.add(new Post(rs.getLong("id"), String.valueOf(rs.getInt("delay")), rs.getString("message")));
-            }
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return result;
+	public List<Post> findAll(String userName){
+		return DAO.BotFunctions.getBotPosts(userName);
+//		ArrayList<Post> result = new ArrayList<>();
+//		PreparedStatement prepStatment;
+//		
+//		try {
+//			if (connection == null || connection.isClosed())
+//				connection = HikariCP.getDataSource().getConnection();
+//			
+////			prepStatment = connection.prepareStatement("SELECT p.id id, p.message message, p.daydelay delay FROM posts p, post_scripts ps where p.ref_script_id = ?");
+//			prepStatment = connection.prepareStatement("SELECT p.id id, p.message message, p.daydelay delay FROM posts p");
+////			prepStatment.setBigDecimal(1, BigDecimal.valueOf(postScriptId));
+//			ResultSet rs = prepStatment.executeQuery();
+//            while(rs.next()){
+//            	result.add(new Post(rs.getLong("id"), String.valueOf(rs.getInt("delay")), rs.getString("message")));
+//            }
+//            connection.close();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		return result;
 	}
 	
 	public synchronized void delete(Post post) {
-		PreparedStatement prepStatment;
-		
-		try {
-			prepStatment = connection.prepareStatement("delete from \"Posts\" where \"ID\" = ?");
-			prepStatment.setBigDecimal(1, BigDecimal.valueOf(post.getId()));
-			prepStatment.executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		DAO.BotFunctions.deleteBotPost(post);
+//		PreparedStatement prepStatment;
+//		try {
+//			if (connection == null || connection.isClosed())
+//				connection = HikariCP.getDataSource().getConnection();
+//			prepStatment = connection.prepareStatement("delete from posts where id = ?");
+//			prepStatment.setBigDecimal(1, BigDecimal.valueOf(post.getId()));
+//			prepStatment.executeUpdate();
+//			connection.close();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 	}
 	
-	public synchronized void save(Post post) {
-		PreparedStatement prepStatment;
-		if (post.isPersisted()) {
-			try {
-				prepStatment = connection.prepareStatement("update \"Posts\" set \"DayDelay\" = ?, \"Message\" = ? where \"ID\" = ?");
-				prepStatment.setInt(1, Integer.valueOf(post.getDayDelay()));
-				prepStatment.setString(2, post.getMessage());
-				prepStatment.setBigDecimal(3, BigDecimal.valueOf(post.getId()));
-				prepStatment.executeUpdate();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		else {
-			try {
-				prepStatment = connection.prepareStatement("insert into \"Posts\" (\"DayDelay\", \"Message\") values(?, ?)");
-				prepStatment.setInt(1, Integer.valueOf(post.getDayDelay()));
-				prepStatment.setString(2, post.getMessage());
-				prepStatment.executeUpdate();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+	public void save(Post post, String userName) {
+		DAO.BotFunctions.saveBotPost(post, userName);
+//		PreparedStatement prepStatment;
+//		BigDecimal botId = null;
+//		try {
+//			if (connection == null || connection.isClosed())
+//				connection = HikariCP.getDataSource().getConnection();
+//			if (post.isPersisted()) {
+//				prepStatment = connection.prepareStatement("update posts set daydelay = ?, message = ? where id = ?");
+//				prepStatment.setInt(1, Integer.valueOf(post.getDayDelay()));
+//				prepStatment.setString(2, post.getMessage());
+//				prepStatment.setBigDecimal(3, BigDecimal.valueOf(post.getId()));
+//				prepStatment.executeUpdate();
+//			}
+//			else {
+//				prepStatment = connection.prepareStatement("select id from bots where username = ?");
+//				prepStatment.setString(1, userName);
+//				ResultSet rSet = prepStatment.executeQuery();
+//				if(rSet.next())
+//					botId = rSet.getBigDecimal(1);
+//				prepStatment = connection.prepareStatement("insert into posts (daydelay, message, ref_bot) values(?, ?, ?)");
+//				prepStatment.setInt(1, Integer.valueOf(post.getDayDelay()));
+//				prepStatment.setString(2, post.getMessage());
+//				prepStatment.setBigDecimal(3, botId);
+//				//prepStatment.setBigDecimal(3, BigDecimal.valueOf(postScriptId));
+//				prepStatment.executeUpdate();
+//			}
+//			connection.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 }

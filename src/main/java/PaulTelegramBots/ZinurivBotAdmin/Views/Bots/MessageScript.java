@@ -1,7 +1,9 @@
-package PaulTelegramBots.ZinurivBotAdmin.Views;
+package PaulTelegramBots.ZinurivBotAdmin.Views.Bots;
 
 import java.util.List;
 
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -10,23 +12,29 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+import PaulTelegramBots.ZinurivBotAdmin.MyUI;
 import PaulTelegramBots.ZinurivBotAdmin.Models.Message;
 import PaulTelegramBots.ZinurivBotAdmin.Services.MessageService;
 
-public class MessageScript extends CustomComponent {
+public class MessageScript extends CustomComponent{
 	
 	private MessageService service = MessageService.getInstance();
     private Grid<Message> grid = new Grid<>(Message.class);
     private MessageForm form = new MessageForm(this);
     
-	public MessageScript() {
+    private String botUserName;
+    
+	public MessageScript(String userName) {
 		Button addMessage = new Button("Добавить сообщение");
     	addMessage.addClickListener(e ->{
     		grid.asSingleSelect().clear();
     		form.setMessage(new Message());
     	});
+    	setBotUserName(userName);
+    	
     	Label label = new Label("<H1>Единоразовая рассылки</H1>", ContentMode.HTML);
     	label.setSizeUndefined();
     	HorizontalLayout labelLayout = new HorizontalLayout(label);
@@ -68,8 +76,17 @@ public class MessageScript extends CustomComponent {
 	}
 	
 	public void updateList() {
-    	List<Message> customers = service.findAll();
+    	List<Message> customers = service.findAll(getBotUserName());
         grid.setItems(customers);
 
     }
+
+	public String getBotUserName() {
+		return botUserName;
+	}
+
+	public void setBotUserName(String botUserName) {
+		this.botUserName = botUserName;
+	}
+	
 }

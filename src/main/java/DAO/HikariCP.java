@@ -1,4 +1,4 @@
-package PaulTelegramBots.ZinurivBotAdmin;
+package DAO;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,7 +23,7 @@ public class HikariCP {
                     poolConfig.setUsername(dbUri.getUserInfo().split(":")[0]);
                     poolConfig.setPassword(dbUri.getUserInfo().split(":")[1]);
                 }
-                poolConfig.setMaximumPoolSize(1);
+                poolConfig.setMaximumPoolSize(3);
                 poolConfig.addDataSourceProperty("sslmode","require");
                 dataSource = (DataSource) new HikariDataSource(poolConfig);
             } catch (URISyntaxException e) {

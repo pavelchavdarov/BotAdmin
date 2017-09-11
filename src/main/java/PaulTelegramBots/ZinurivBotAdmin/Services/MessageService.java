@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import PaulTelegramBots.ZinurivBotAdmin.HikariCP;
+import DAO.HikariCP;
 import PaulTelegramBots.ZinurivBotAdmin.Models.Message;
 
 public class MessageService {
@@ -23,34 +23,26 @@ public class MessageService {
 	}
 	
 	public static MessageService getInstance() {
-		if (messageservice == null) {
+		if (messageservice == null)
 			messageservice = new MessageService();
-		}
-		try {
-			if (connection == null || connection.isClosed()) {
-				connection = HikariCP.getDataSource().getConnection();
-				System.out.println("Spawn new connection");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return messageservice;
 	}
 	
-	public synchronized List<Message> findAll(){
+	public synchronized List<Message> findAll(String botUserName){
 		ArrayList<Message> result = new ArrayList<>();
 		PreparedStatement prepStatment;
 		
 		try {
-			prepStatment = connection.prepareStatement("SELECT id, message, date_to_send FROM messages");
-			
+			if (connection == null || connection.isClosed())
+				connection = HikariCP.getDataSource().getConnection();
+			prepStatment = connection.prepareStatement("SELECT m.id, m.message, m.date_to_send FROM messages m, bots b WHERE b.username = ? and m.ref_bot = b.id");
+			prepStatment.setString(1, botUserName);
 			ResultSet rs = prepStatment.executeQuery();
             while(rs.next()){
             	result.add(new Message(rs.getLong("id"), rs.getDate("date_to_send").toLocalDate(), rs.getString("message")));
             }
+            connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -61,9 +53,12 @@ public class MessageService {
 		PreparedStatement prepStatment;
 		
 		try {
+			if (connection == null || connection.isClosed())
+				connection = HikariCP.getDataSource().getConnection();
 			prepStatment = connection.prepareStatement("delete from \"Messages\" where \"ID\" = ?");
 			prepStatment.setBigDecimal(1, BigDecimal.valueOf(message .getId()));
 			prepStatment.executeUpdate();
+			connection.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,31 +66,39 @@ public class MessageService {
 		
 	}
 	
-	public synchronized void save(Message message) {
-		PreparedStatement prepStatment;
-		if (message.isPersisted()) {
-			try {
-				prepStatment = connection.prepareStatement("update messages set date_to_send = ?, message = ? where id = ?");
-				prepStatment.setDate(1, Date.valueOf(message.getDateToSend()));
-				prepStatment.setString(2, message.getMessage());
-				prepStatment.setBigDecimal(3, BigDecimal.valueOf(message.getId()));
-				prepStatment.executeUpdate();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		else {
-			try {
-				prepStatment = connection.prepareStatement("insert into messages (date_to_send, message) values(?, ?)");
-				prepStatment.setDate(1, Date.valueOf(message.getDateToSend()));
-				prepStatment.setString(2, message.getMessage());
-				prepStatment.executeUpdate();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+	public synchronized void save(Message message, String botUserName) {
+		DAO.BotFunctions.saveBotMessage(message, botUserName);
+//		PreparedStatement prepStatment;
+//		BigDecimal botId = null;
+//		try {
+//			if (connection == null || connection.isClosed())
+//				connection = HikariCP.getDataSource().getConnection();
+//			if (message.isPersisted()) {
+//				prepStatment = connection.prepareStatement("update messages set date_to_send = ?, message = ? where id = ?");
+//				prepStatment.setDate(1, Date.valueOf(message.getDateToSend()));
+//				prepStatment.setString(2, message.getMessage());
+//				prepStatment.setBigDecimal(3, BigDecimal.valueOf(message.getId()));
+//				prepStatment.executeUpdate();
+//			}
+//			else {
+//				prepStatment = connection.prepareStatement("select id from bots where username = ?");
+//				prepStatment.setString(1, botUserName);
+//				ResultSet rSet = prepStatment.executeQuery();
+//				if(rSet.next())
+//					botId = rSet.getBigDecimal(1);
+//				
+//				prepStatment = connection.prepareStatement("insert into messages (date_to_send, message, ref_bot) values(?, ?, ?)");
+//				prepStatment.setDate(1, Date.valueOf(message.getDateToSend()));
+//				prepStatment.setString(2, message.getMessage());
+//				prepStatment.setBigDecimal(3,  botId);
+//				prepStatment.executeUpdate();
+//			}
+//			connection.close();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
 	}
 
 }

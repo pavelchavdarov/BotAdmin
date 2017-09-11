@@ -1,9 +1,12 @@
-package PaulTelegramBots.ZinurivBotAdmin.Auth;
+package PaulTelegramBots.ZinurivBotAdmin.Services;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.bouncycastle.crypto.generators.SCrypt;
 
 public class UserService {
 	private static SecureRandom random = new SecureRandom();
@@ -11,7 +14,9 @@ public class UserService {
 	private static Map<String, String> rememberedUsers = new HashMap<>();
 	
 	public static boolean isAuthenticUser(String username, String password) {
-		return username.equals("zinurov") && password.equals("Bot");
+		SCrypt sCrypt = new SCrypt();
+		String sCryptHash = new String(sCrypt.generate(password.getBytes(), username.getBytes(), 2, 2, 2, 32), StandardCharsets.UTF_8);
+		return DAO.Auth.CheckClient(username, sCryptHash); //username.equals("zinurov") && password.equals("Bot");
 	}
 	
 	public static String rememberUser(String username) {

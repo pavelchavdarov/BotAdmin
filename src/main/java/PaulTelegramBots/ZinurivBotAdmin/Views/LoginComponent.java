@@ -18,7 +18,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import PaulTelegramBots.ZinurivBotAdmin.MyUI;
-import PaulTelegramBots.ZinurivBotAdmin.Auth.AuthService;
+import PaulTelegramBots.ZinurivBotAdmin.Services.AuthService;
 
 import com.vaadin.ui.*;
 
@@ -36,8 +36,9 @@ public class LoginComponent extends VerticalLayout implements View {
 		rememberMe = new CheckBox("Запомнить");
 		button = new Button("Войти", e -> onLogin(username.getValue(), password.getValue(), rememberMe.getValue()));
 		button.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-				
-		FormLayout formLayout = new FormLayout(username, password,rememberMe, button);
+		Button registration = new Button("Регистрация", e -> onRegistration());		
+		
+		FormLayout formLayout = new FormLayout(username, password,rememberMe, button, registration);
 		formLayout.setSizeUndefined();
 		//VerticalLayout layout = new VerticalLayout(formLayout);
 		addComponents(formLayout);
@@ -65,6 +66,11 @@ public class LoginComponent extends VerticalLayout implements View {
 		else {
 			Notification.show("Введена неверная комбинация логин/пароль", Notification.Type.ERROR_MESSAGE);
 		}
+	}
+	
+	private void onRegistration() {
+		MyUI ui = (MyUI) UI.getCurrent();
+		 ui.getNavigator().navigateTo("registration");
 	}
 	
 	@Override

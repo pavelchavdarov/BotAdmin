@@ -76,6 +76,21 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.1.4</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>1.58</version>
+		</dependency>
+		<dependency>
+			<groupId>org.telegram</groupId>
+			<artifactId>telegrambots</artifactId>
+			<version>3.2</version>
+        </dependency>
+        <dependency>
+   			<groupId>com.byteowls</groupId>
+   			<artifactId>vaadin-chartjs</artifactId>
+   			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

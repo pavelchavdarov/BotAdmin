@@ -16,10 +16,11 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
-//import PaulTelegramBots.ZinurivBotAdmin.PostScript.Script;
-import PaulTelegramBots.ZinurivBotAdmin.Views.MessageScript;
 import PaulTelegramBots.ZinurivBotAdmin.Views.PersonalAccountView;
-import PaulTelegramBots.ZinurivBotAdmin.Auth.AuthService;
+import PaulTelegramBots.ZinurivBotAdmin.Views.RegistrationView;
+import PaulTelegramBots.ZinurivBotAdmin.Views.Bots.MessageScript;
+import PaulTelegramBots.ZinurivBotAdmin.Services.AuthService;
+import PaulTelegramBots.ZinurivBotAdmin.Views.DummyView;
 import PaulTelegramBots.ZinurivBotAdmin.Views.LoginComponent;
 import PaulTelegramBots.ZinurivBotAdmin.Views.MainPageView;
 
@@ -39,23 +40,25 @@ public class MyUI extends UI {
 	
 	private Navigator navigator;
 	Panel panelMain;// = new Panel(main);
-	Panel panelDisplay;// = new Panel(display);
+	private Panel panelDisplay;// = new Panel(display);
 	private MenuBar mainMenu;
     @Override
     protected void init(VaadinRequest vaadinRequest) {
     	
-		panelDisplay = new Panel();
-		panelDisplay.setSizeFull();
+		setPanelDisplay(new Panel());
+		getPanelDisplay().setWidth("100%");
 		
 		setMainMenu(new MenuBar());
 		MenuItem mainPageItem = getMainMenu().addItem("Главная", null);
-		
 		MenuItem personalAccountItem = getMainMenu().addItem("Личный кабинет", null, null);
+		MenuItem contactsItem = getMainMenu().addItem("Контакты", null);
+		MenuItem aboutItem = getMainMenu().addItem("О сервисе", null);
 		
 		MenuBar.Command personalAccountCommand = new MenuBar.Command() {
 			
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
+				getPanelDisplay().setCaption(selectedItem.getText());
 				navigator.navigateTo("account");
 			}
 		};
@@ -65,6 +68,7 @@ public class MyUI extends UI {
 			
 			@Override
 			public void menuSelected(MenuItem selectedItem) {
+				getPanelDisplay().setCaption(selectedItem.getText());
 				navigator.navigateTo("");
 			}
 		};
@@ -75,25 +79,46 @@ public class MyUI extends UI {
 //		personalAccountItem.addItem("Контакты", null, personalAccountCommand);
 //		personalAccountItem.addItem("Справка", null, personalAccountCommand);
 		
-		MenuItem contactsItem = getMainMenu().addItem("Контакты", null);
-		MenuItem aboutItem = getMainMenu().addItem("О сервисе", null);
+		
+		MenuBar.Command contactsCommand = new MenuBar.Command() {
+			
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				getPanelDisplay().setCaption(selectedItem.getText());
+				navigator.navigateTo("dummy");
+			}
+		};
+		contactsItem.setCommand(contactsCommand);
+		
+		MenuBar.Command abountCommand = new MenuBar.Command() {
+			
+			@Override
+			public void menuSelected(MenuItem selectedItem) {
+				getPanelDisplay().setCaption(selectedItem.getText());
+				navigator.navigateTo("dummy");
+			}
+		};
+		aboutItem.setCommand(abountCommand);
 		
 		getMainMenu().setSizeUndefined();
 		
-		VerticalLayout layout = new VerticalLayout(getMainMenu(), panelDisplay);
+		VerticalLayout layout = new VerticalLayout(getMainMenu(), getPanelDisplay());
 		
 //		layout.setExpandRatio(panelMain, 1f);
-		layout.setExpandRatio(panelDisplay, 1f);
+		layout.setExpandRatio(getPanelDisplay(), 1f);
 		
-		layout.setSizeFull();
+		//layout.setSizeFull();
 		
 		setContent(layout);
 		
 		
-		navigator = new Navigator(this, panelDisplay);
+		navigator = new Navigator(this, getPanelDisplay());
 		navigator.addView("", new MainPageView());
     	navigator.addView("login", new LoginComponent());
     	navigator.addView("account", new PersonalAccountView());
+    	navigator.addView("dummy", new DummyView());
+    	navigator.addView("registration", new RegistrationView());
+    	
     	
     	/*
     	if(AuthService.isAuthenticated()) {
@@ -150,7 +175,8 @@ public class MyUI extends UI {
 
     }
 */
-    @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
+    @SuppressWarnings("serial")
+	@WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
@@ -177,5 +203,13 @@ public class MyUI extends UI {
 
 	public void setMainMenu(MenuBar mainMenu) {
 		this.mainMenu = mainMenu;
+	}
+
+	public Panel getPanelDisplay() {
+		return panelDisplay;
+	}
+
+	public void setPanelDisplay(Panel panelDisplay) {
+		this.panelDisplay = panelDisplay;
 	}
 }

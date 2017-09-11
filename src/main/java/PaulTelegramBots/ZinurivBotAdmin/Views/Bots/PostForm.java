@@ -1,9 +1,8 @@
-package PaulTelegramBots.ZinurivBotAdmin.Views;
+package PaulTelegramBots.ZinurivBotAdmin.Views.Bots;
 
 import com.vaadin.annotations.PropertyId;
 import com.vaadin.data.Binder;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.RichTextArea;
@@ -12,36 +11,32 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-import PaulTelegramBots.ZinurivBotAdmin.Models.Message;
-import PaulTelegramBots.ZinurivBotAdmin.Services.MessageService;
+import PaulTelegramBots.ZinurivBotAdmin.Models.Post;
+import PaulTelegramBots.ZinurivBotAdmin.Services.PostService;
 
 
 
-public class MessageForm extends VerticalLayout {
-
-	private DateField dateToSend = new DateField("Дата");
-	
+public class PostForm extends VerticalLayout {
+	@PropertyId("dayDelay")
+	private TextField timeShiftField = new TextField("Интервал");
 	@PropertyId("message")
 	private TextArea messageField = new TextArea("Сообщение");
 	private Button save = new Button("Сохранить");
 	private Button delete = new Button("Удалить");
-	private Binder<Message> binder = new Binder<>(Message.class);
+	private Binder<Post> binder = new Binder<>(Post.class);
 	
-	private MessageService service = MessageService.getInstance();
-	private Message message;
-	private MessageScript script;
+	private PostService service = PostService.getInstance();
+	private Post message;
+	private PostScript script;
 	
-	public MessageForm(MessageScript script) {
+	public PostForm(PostScript script) {
 		this.script = script;
-		//dateToSend.setSizeFull();
-		dateToSend.setDateFormat("dd.MM.yyyy");
-		dateToSend.setPlaceholder("dd.mm.yyyy");
-		dateToSend.setLenient(true);
+		
 		//setSizeUndefined();
 		
 		HorizontalLayout buttons = new HorizontalLayout(save, delete);
-
-		addComponents(dateToSend, messageField, buttons);
+		timeShiftField.setSizeFull();
+		addComponents(timeShiftField, messageField, buttons);
 		messageField.setSizeFull();
 		save.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		save.addClickListener(e -> save());
@@ -50,13 +45,13 @@ public class MessageForm extends VerticalLayout {
 		binder.bindInstanceFields(this);
 	}
 	
-	public void setMessage(Message message) {
+	public void setMessage(Post message) {
 		this.message = message;
 		binder.setBean(message);
 		
 		delete.setVisible(message.isPersisted());
 		setVisible(true);
-		dateToSend.focus();
+		timeShiftField.selectAll();
 		
 	}
 	
@@ -69,7 +64,7 @@ public class MessageForm extends VerticalLayout {
 	
 	private void save() {
 		System.out.println(message.toString());
-		service.save(message);
+		service.save(message, script.getBotUserName());
 		script.updateList();
 		setVisible(false);
 	}

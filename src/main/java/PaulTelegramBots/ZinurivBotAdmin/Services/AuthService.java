@@ -1,4 +1,4 @@
-package PaulTelegramBots.ZinurivBotAdmin.Auth;
+package PaulTelegramBots.ZinurivBotAdmin.Services;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -75,4 +75,11 @@ public class AuthService {
 		VaadinService.getCurrentResponse().addCookie(cookie);
 	}
 	
+	public static String getAuthenticatedUserName() {
+		return String.valueOf(VaadinSession.getCurrent().getAttribute(SESSION_USERNAME));
+	}
+	
+	public static Long getAuthenticatedUserId() {
+		return DAO.Info.getClientIdByLogin(getAuthenticatedUserName());
+	}
 }

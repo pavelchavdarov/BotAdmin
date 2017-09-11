@@ -1,4 +1,4 @@
-package PaulTelegramBots.ZinurivBotAdmin.Views;
+package PaulTelegramBots.ZinurivBotAdmin.Views.Bots;
 
 import java.util.List;
 
@@ -21,12 +21,16 @@ public class PostScript extends CustomComponent {
     private Grid<Post> grid = new Grid<>(Post.class);
     private PostForm form = new PostForm(this);
     
-	public PostScript() {
+    private String botUserName;
+    
+	public PostScript(String userName) {
 		Button addMessage = new Button("Добавить сообщение");
     	addMessage.addClickListener(e ->{
     		grid.asSingleSelect().clear();
     		form.setMessage(new Post());
     	});
+    	setBotUserName(userName);
+    	
     	Label label = new Label("<H1>Программа рассылки</H1>", ContentMode.HTML);
     	label.setSizeUndefined();
     	HorizontalLayout labelLayout = new HorizontalLayout(label);
@@ -59,17 +63,26 @@ public class PostScript extends CustomComponent {
     	});
         // add Grid to the layout
     	VerticalLayout layout = new VerticalLayout();
-    	layout.setSizeFull();
+//    	layout.setSizeFull();
         layout.addComponents(labelLayout, toolbar, main);
         setCompositionRoot(layout);
-        //setSizeFull();
+        
      // fetch list of Customers from service and assign it to Grid
         updateList();
+        setSizeFull();
 	}
 	
 	public void updateList() {
-    	List<Post> customers = service.findAll();
+    	List<Post> customers = service.findAll(getBotUserName());
         grid.setItems(customers);
 
     }
+
+	public String getBotUserName() {
+		return botUserName;
+	}
+
+	public void setBotUserName(String botUserName) {
+		this.botUserName = botUserName;
+	}
 }

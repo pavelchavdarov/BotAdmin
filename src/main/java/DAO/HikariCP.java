@@ -25,6 +25,7 @@ public class HikariCP {
                 }
                 poolConfig.setMaximumPoolSize(3);
                 poolConfig.addDataSourceProperty("sslmode","require");
+                poolConfig.setDriverClassName("org.postgresql.Driver");
                 dataSource = (DataSource) new HikariDataSource(poolConfig);
             } catch (URISyntaxException e) {
                 e.printStackTrace();

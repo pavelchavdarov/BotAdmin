@@ -7,8 +7,11 @@ public class Post implements Serializable, Cloneable{
 	private Long id;
 	private String message;
 	private String dayDelay;
+	private String buttons;
 	
-	public Post() {}
+	public Post() {
+		
+	}
 	
 	public Post(long id, String dayDelay, String msg) {
 		this.id = id;
@@ -71,6 +74,20 @@ public class Post implements Serializable, Cloneable{
 
 	public void setDayDelay(String dayDelay) {
 		this.dayDelay = dayDelay;
+	}
+
+	/**
+	 * @return the buttons
+	 */
+	public String getButtons() {
+		return buttons;
+	}
+
+	/**
+	 * @param buttons the buttons to set
+	 */
+	public void setButtons(String buttons) {
+		this.buttons = buttons;
 	}
 
 }

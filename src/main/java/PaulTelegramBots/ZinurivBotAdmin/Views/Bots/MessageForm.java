@@ -42,7 +42,9 @@ public class MessageForm extends VerticalLayout {
 		HorizontalLayout buttons = new HorizontalLayout(save, delete);
 
 		addComponents(dateToSend, messageField, buttons);
-		messageField.setSizeFull();
+		setSizeFull();
+		messageField.setHeight(400, Unit.PIXELS);
+		messageField.setWidth(240, Unit.PIXELS);
 		save.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		save.addClickListener(e -> save());
 		delete.addClickListener(e -> delete());

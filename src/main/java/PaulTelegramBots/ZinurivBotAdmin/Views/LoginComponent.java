@@ -7,15 +7,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.ui.NotificationRole;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import PaulTelegramBots.ZinurivBotAdmin.MyUI;
 import PaulTelegramBots.ZinurivBotAdmin.Services.AuthService;
@@ -32,13 +24,21 @@ public class LoginComponent extends VerticalLayout implements View {
 	
 	public LoginComponent() {
 		username = new TextField("Пользователь:");
+		username.setIcon(VaadinIcons.USER);
+		
 		password = new PasswordField("Пароль:");
+		password.setIcon(VaadinIcons.KEY);
+		
 		rememberMe = new CheckBox("Запомнить");
+		
 		button = new Button("Войти", e -> onLogin(username.getValue(), password.getValue(), rememberMe.getValue()));
 		button.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-		Button registration = new Button("Регистрация", e -> onRegistration());		
+		button.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 		
-		FormLayout formLayout = new FormLayout(username, password,rememberMe, button, registration);
+		Button registration = new Button("Регистрация", e -> onRegistration());		
+		registration.setStyleName(ValoTheme.BUTTON_LINK);
+		
+		FormLayout formLayout = new FormLayout(username, password,rememberMe, new HorizontalLayout(button, registration));
 		formLayout.setSizeUndefined();
 		//VerticalLayout layout = new VerticalLayout(formLayout);
 		addComponents(formLayout);

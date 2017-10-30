@@ -2,6 +2,7 @@ package PaulTelegramBots.ZinurivBotAdmin.Views.Bots;
 
 import java.util.List;
 
+import com.vaadin.external.org.slf4j.helpers.Util;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -11,7 +12,10 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.PopupView;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 
 import PaulTelegramBots.ZinurivBotAdmin.Models.Post;
 import PaulTelegramBots.ZinurivBotAdmin.Services.PostService;
@@ -24,14 +28,16 @@ public class PostScript extends CustomComponent {
     
     private String botUserName;
     
-    private PopupView popupForm;
+    //private PopupView popupForm;
+    private Window postForm;
     
 	public PostScript(String userName) {
 		Button addMessage = new Button("Добавить сообщение");
     	addMessage.addClickListener(e ->{
     		grid.asSingleSelect().clear();
     		form.setMessage(new Post());
-    		popupForm.setPopupVisible(true);
+    		//popupForm.setPopupVisible(true);
+    		UI.getCurrent().addWindow(postForm);
     	});
     	setBotUserName(userName);
     	
@@ -41,8 +47,11 @@ public class PostScript extends CustomComponent {
     	labelLayout.setSizeFull();
     	labelLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
     	
-    	popupForm = new PopupView(null, form);
-    	popupForm.setHideOnMouseOut(false);
+    	//popupForm = new PopupView(null, form);
+    	postForm = new Window("Редактироание сообщения", form);
+    	postForm.setResizable(false);
+    	postForm.setModal(true);
+    	//popupForm.setHideOnMouseOut(false);
     	HorizontalLayout toolbar = new HorizontalLayout(addMessage);
     	
     	grid.setColumns("dayDelay", "message");
@@ -58,19 +67,22 @@ public class PostScript extends CustomComponent {
     	
     	grid.asSingleSelect().addValueChangeListener(Event -> {
     		if(Event.getValue() == null) {
-    			popupForm.setPopupVisible(false);
+    			//popupForm.setPopupVisible(false);
+    			postForm.close();
     		}
     		else {
     			form.setMessage(Event.getValue());
-    			popupForm.setPopupVisible(true);
+    			//popupForm.setPopupVisible(true);
+    			UI.getCurrent().addWindow(postForm);
     		}
     	});
         // add Grid to the layout
     	VerticalLayout layout = new VerticalLayout();
 //    	layout.setSizeFull();
     	
-        layout.addComponents(labelLayout, popupForm, toolbar, main);
-        layout.setComponentAlignment(popupForm, Alignment.MIDDLE_CENTER);
+        //layout.addComponents(labelLayout, popupForm, toolbar, main);
+        layout.addComponents(labelLayout, toolbar, main);
+        //layout.setComponentAlignment(popupForm, Alignment.MIDDLE_CENTER);
         setCompositionRoot(layout);
         
      // fetch list of Customers from service and assign it to Grid

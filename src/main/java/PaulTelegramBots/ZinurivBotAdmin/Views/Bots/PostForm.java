@@ -170,6 +170,7 @@ public class PostForm extends VerticalLayout {
 		save.addClickListener(e -> save());
 		delete.setStyleName(ValoTheme.BUTTON_DANGER);
 		delete.addClickListener(e -> delete());
+		cancel.setStyleName(ValoTheme.BUTTON_QUIET);
 		cancel.addClickListener(e -> cancel());
 		
 		binder.bindInstanceFields(this);

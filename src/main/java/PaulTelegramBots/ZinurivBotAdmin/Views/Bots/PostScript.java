@@ -51,6 +51,7 @@ public class PostScript extends CustomComponent {
     	postForm = new Window("Редактироание сообщения", form);
     	postForm.setResizable(false);
     	postForm.setModal(true);
+    	postForm.setDraggable(true);
     	//popupForm.setHideOnMouseOut(false);
     	HorizontalLayout toolbar = new HorizontalLayout(addMessage);
     	
